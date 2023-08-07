@@ -304,3 +304,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Level Databases
+Level-*/level-*.db

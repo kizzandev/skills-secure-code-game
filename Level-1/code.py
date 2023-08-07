@@ -12,18 +12,29 @@
 '''
 
 from collections import namedtuple
+from decimal import Decimal # For the rounding error
 
 Order = namedtuple('Order', 'id, items')
 Item = namedtuple('Item', 'type, description, amount, quantity')
 
+MAX_ITEM_AMOUNT = 100_000
+# TESTS and HACK are solved, but added the following after checking the solution:
+MAX_NET = 1e+9
+MAX_QUANTITY = 100
+
 def validorder(order: Order):
-    net = 0
+    net = Decimal('0')
     
     for item in order.items:
         if item.type == 'payment':
-            net += item.amount
+            if -1*MAX_ITEM_AMOUNT < item.amount < MAX_ITEM_AMOUNT:
+                net += Decimal(str(item.amount))
         elif item.type == 'product':
-            net -= item.amount * item.quantity
+            # Solved, but added ifs after checking the solution
+            if 0 < item.quantity <= MAX_QUANTITY and 0 < item.amount < MAX_ITEM_AMOUNT:
+                net -= Decimal(str(item.amount)) * item.quantity
+            if MAX_NET < net < -1*MAX_NET:
+                return("Total amount exceeded")
         else:
             return("Invalid item type: %s" % item.type)
     
