@@ -121,9 +121,24 @@ class DB_CRUD_ops(object):
             db_con = con.create_connection(db_path)
             cur = db_con.cursor()
             
+            # Solution
+            restricted_chars = ";%&^!#-'"
+            has_restricted_char = any([char in stock_symbol for char in restricted_chars])
+            max_len_for_symbol = 5
+            is_valid_symbol = len(stock_symbol) <= max_len_for_symbol
+            if has_restricted_char or not is_valid_symbol:
+                newStockSymbol = ''
+                i = 0
+                while stock_symbol[i] not in restricted_chars and i < max_len_for_symbol:
+                    newStockSymbol += stock_symbol[i]
+                    i += 1
+                stock_symbol = newStockSymbol
+            # /Solution
+
             res = "[METHOD EXECUTED] get_stock_price\n"
             query = "SELECT price FROM stocks WHERE symbol = '" + stock_symbol + "'"
             res += "[QUERY] " + query + "\n"
+
             if ';' in query:
                 res += "[SCRIPT EXECUTION]\n"
                 cur.executescript(query)

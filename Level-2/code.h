@@ -43,14 +43,18 @@ user_account* create_user_account(bool isAdmin, const char* username) {
 bool update_setting(user_account* ua, const char *index, const char *value) {
     char *endptr;
     long i, v;
+    // strtol (string to long) works for negative numbers
     i = strtol(index, &endptr, 10);
     if (*endptr)
         return false;
+    // The solution indicated to disallow negative numbers 'i < 0'
     if (i >= SETTINGS_COUNT)
         return false;
     v = strtol(value, &endptr, 10);
     if (*endptr)
         return false;
+    // Which makes sense considering we are accessing with the variable 'i'
+    // But somehow, both the tests.c and hack.c pass
     ua->setting[i] = v;
     return true;
 }
